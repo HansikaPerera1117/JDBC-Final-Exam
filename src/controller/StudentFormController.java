@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.Optional;
 
 public class StudentFormController {
     public Label lblDate;
@@ -101,6 +102,26 @@ public class StudentFormController {
 
         while (result.next()){
             Button btn = new Button("Delete");
+            btn.setOnAction(e -> {
+                         String student_id = tblStudent.getSelectionModel().getSelectedItem().getStudent_id();
+
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are You Sure?", ButtonType.YES, ButtonType.NO);
+                        Optional<ButtonType> buttonType = alert.showAndWait();
+
+                        if (buttonType.get().equals(ButtonType.YES)) {
+                            try {
+                                if (CrudUtil.execute("DELETE FROM student WHERE student_id=?", student_id)) {
+                                    new Alert(Alert.AlertType.CONFIRMATION, "Student Deleted Successfully!").show();
+                                    initialUI();
+                                    loadAllStudents();
+                                }
+                            } catch (SQLException | ClassNotFoundException exception) {
+                                exception.printStackTrace();
+                                new Alert(Alert.AlertType.CONFIRMATION, "Deleted!").show();
+                            }
+
+                        }
+            });
             obList.add(new StudentTM(
                         result.getString("student_id"),
                         result.getString("student_name"),
@@ -188,7 +209,7 @@ public class StudentFormController {
             //---------------------update--------------------------------------
             try {
                 if (CrudUtil.execute("UPDATE student SET student_name=? , email=? , contact=? , address=? , nic=? WHERE student_id=?",txtStudentName.getText(),txtEmail.getText(),txtContactNo.getText(),txtAddress.getText(),txtNIC.getText(),StudentID)){
-                    new Alert(Alert.AlertType.CONFIRMATION, "Saved Student Successfully!..").show();
+                    new Alert(Alert.AlertType.CONFIRMATION, "Updated Student Successfully!..").show();
                 }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
