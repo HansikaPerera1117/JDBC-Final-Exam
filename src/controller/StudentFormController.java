@@ -5,14 +5,22 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
+import model.Student;
+import util.CrudUtil;
 import view.tm.StudentTM;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
@@ -40,11 +48,55 @@ public class StudentFormController {
     private String StudentID;
 
     public void initialize(){
+
+        colId.setCellValueFactory(new PropertyValueFactory("student_id"));
+        colName.setCellValueFactory(new PropertyValueFactory("student_name"));
+        colEmail.setCellValueFactory(new PropertyValueFactory("email"));
+        colContact.setCellValueFactory(new PropertyValueFactory("contact"));
+        colAddress.setCellValueFactory(new PropertyValueFactory("address"));
+        colNIC.setCellValueFactory(new PropertyValueFactory("nic"));
+        colDelete.setCellValueFactory(new PropertyValueFactory("btn"));
+
+        try {
+            loadAllStudents();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         loadDateAndTime();
-        initialUI();
+
+        try {
+            initialUI();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void initialUI() {
+    private void loadAllStudents() throws SQLException, ClassNotFoundException {
+        ResultSet result= CrudUtil.execute("SELECT * FROM student");
+        ObservableList<StudentTM> obList = FXCollections.observableArrayList();
+
+        while (result.next()){
+            Button btn = new Button("Delete");
+            obList.add(new StudentTM(
+                        result.getString("student_id"),
+                        result.getString("student_name"),
+                        result.getString("email"),
+                        result.getString("contact"),
+                        result.getString("address"),
+                        result.getString("nic"),
+                        btn
+                        )
+                     );
+               }
+        tblStudent.setItems(obList);
+    }
+
+    private void initialUI() throws SQLException, ClassNotFoundException {
         StudentID = generateNewStudentId();
         lblStudentID.setText("Student ID :" + StudentID);
         txtStudentName.clear();
@@ -60,7 +112,23 @@ public class StudentFormController {
         btnSave.setDisable(true);
     }
 
-    private String generateNewStudentId() {
+    private String generateNewStudentId() throws SQLException, ClassNotFoundException {
+      /*  ResultSet rst = CrudUtil.execute("SELECT student_id FROM student ORDER BY student_id DESC LIMIT 1;");
+        if (rst.next()) {
+            String id = rst.getString("student_id");
+            int co=id.length();
+            String text = id.substring(0,2);
+            String num= id.substring(2,co);
+            int n=Integer.parseInt(num);
+            n++;
+            String numInString = Integer.toString(n);
+            String GenerateId = text+numInString;
+
+            return GenerateId;
+
+        } else {
+            return "S001";
+        }*/
         return null;
     }
 

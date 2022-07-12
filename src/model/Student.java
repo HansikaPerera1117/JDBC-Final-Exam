@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.control.Button;
+
 public class Student {
     private String student_id;
     private String student_name;
@@ -19,6 +21,7 @@ public class Student {
         this.address = address;
         this.nic = nic;
     }
+
 
     public String getStudent_id() {
         return student_id;
