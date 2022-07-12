@@ -8,10 +8,7 @@ import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
@@ -129,7 +126,7 @@ public class StudentFormController {
         } else {
             return "S001";
         }*/
-        return null;
+        return "S006";
     }
 
     public void btnNewStudentOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
@@ -152,6 +149,32 @@ public class StudentFormController {
     }
 
     public void btnSaveStudentOnAction(ActionEvent actionEvent) {
+        if (btnSave.getText().equalsIgnoreCase("Save Student")) {
+            //---------------------save--------------------------------------
+            try {
+                if (CrudUtil.execute("INSERT INTO student VALUES (?,?,?,?,?,?)",StudentID,txtStudentName.getText(),txtEmail.getText(),txtContactNo.getText(),txtAddress.getText(),txtNIC.getText())){
+                    new Alert(Alert.AlertType.CONFIRMATION, "Saved Student Successfully!..").show();
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+            }
+
+        }else {
+            //---------------------update--------------------------------------
+            
+
+        }
+
+        try {
+            loadAllStudents();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void textFields_Key_Released(KeyEvent keyEvent) {
