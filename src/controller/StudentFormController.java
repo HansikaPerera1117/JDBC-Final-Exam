@@ -10,10 +10,12 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
 import model.Student;
 import util.CrudUtil;
+import util.ValidationUtil;
 import view.tm.StudentTM;
 
 import java.sql.ResultSet;
@@ -21,7 +23,9 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class StudentFormController {
     public Label lblDate;
@@ -44,6 +48,7 @@ public class StudentFormController {
     public JFXTextField txtNIC;
 
     private String StudentID;
+    LinkedHashMap<TextField, Pattern> map = new LinkedHashMap<>();
 
     public void initialize(){
 
@@ -75,6 +80,20 @@ public class StudentFormController {
             }
         });
 
+        //-------------------validation pattern---------------------------------
+        Pattern namePattern = Pattern.compile("^[A-z ]{3,25}$");
+        Pattern NICPattern = Pattern.compile("^([0-9]{10}V)$|^([0-9]{12})$");
+        Pattern addressPattern = Pattern.compile("^[A-z0-9 ,/]{4,40}$");
+        Pattern contactNoPattern = Pattern.compile("^(011|070|071|072|074|075|076|077|078)[0-9]{7}$");
+        Pattern emailPattern = Pattern.compile("^[a-z0-9]{5,30}(@gmail.com|@yahoo.com)$");
+
+
+
+        map.put(txtStudentName,namePattern);
+        map.put(txtNIC,NICPattern);
+        map.put(txtAddress,addressPattern);
+        map.put(txtContactNo,contactNoPattern);
+        map.put(txtEmail,emailPattern);
 
 
         try {
@@ -230,7 +249,16 @@ public class StudentFormController {
     }
 
     public void textFields_Key_Released(KeyEvent keyEvent) {
+        ValidationUtil.validate(map,btnSave);
 
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            Object response =  ValidationUtil.validate(map,btnSave);;
+
+            if (response instanceof TextField) {
+                TextField textField = (TextField) response;
+                textField.requestFocus();
+            }
+        }
     }
 
     private void loadDateAndTime() {
