@@ -54,6 +54,28 @@ public class StudentFormController {
         colNIC.setCellValueFactory(new PropertyValueFactory("nic"));
         colDelete.setCellValueFactory(new PropertyValueFactory("btn"));
 
+
+        tblStudent.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            btnSave.setText(newValue != null ? "Update Student" : "Save Student");
+            btnSave.setDisable(newValue == null);
+
+            if (newValue != null) {
+                txtStudentName.setText(newValue.getStudent_name());
+                txtNIC.setText(newValue.getNic());
+                txtAddress.setText(newValue.getAddress());
+                txtContactNo.setText(newValue.getContact());
+                txtEmail.setText(newValue.getEmail());
+
+                txtStudentName.setDisable(false);
+                txtNIC.setDisable(false);
+                txtAddress.setDisable(false);
+                txtContactNo.setDisable(false);
+                txtEmail.setDisable(false);
+            }
+        });
+
+
+
         try {
             loadAllStudents();
         } catch (SQLException throwables) {
