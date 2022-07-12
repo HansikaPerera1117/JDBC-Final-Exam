@@ -172,7 +172,7 @@ public class StudentFormController {
     }
 
     private String generateNewStudentId() throws SQLException, ClassNotFoundException {
-      /*  ResultSet rst = CrudUtil.execute("SELECT student_id FROM student ORDER BY student_id DESC LIMIT 1;");
+        ResultSet rst = CrudUtil.execute("SELECT student_id FROM student ORDER BY student_id DESC LIMIT 1;");
         if (rst.next()) {
             String id = rst.getString("student_id");
             int co=id.length();
@@ -187,8 +187,8 @@ public class StudentFormController {
 
         } else {
             return "S001";
-        }*/
-        return "S006";
+        }
+
     }
 
     public void btnNewStudentOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
@@ -211,6 +211,7 @@ public class StudentFormController {
     }
 
     public void btnSaveStudentOnAction(ActionEvent actionEvent) {
+
         if (btnSave.getText().equalsIgnoreCase("Save Student")) {
             //---------------------save--------------------------------------
             try {
@@ -226,8 +227,11 @@ public class StudentFormController {
 
         }else {
             //---------------------update--------------------------------------
+            Student s = new Student(
+                    lblStudentID.getText(), txtStudentName.getText(), txtEmail.getText(), txtContactNo.getText(), txtAddress.getText(),txtNIC.getText()
+            );
             try {
-                if (CrudUtil.execute("UPDATE student SET student_name=? , email=? , contact=? , address=? , nic=? WHERE student_id=?",txtStudentName.getText(),txtEmail.getText(),txtContactNo.getText(),txtAddress.getText(),txtNIC.getText(),StudentID)){
+                if (CrudUtil.execute("UPDATE student SET student_name=? , email=? , contact=? , address=? , nic=? WHERE student_id=?",s.getStudent_name(),s.getEmail(),s.getContact(),s.getAddress(),s.getNic(),s.getStudent_id())){
                     new Alert(Alert.AlertType.CONFIRMATION, "Updated Student Successfully!..").show();
                 }
             } catch (SQLException throwables) {
@@ -236,11 +240,11 @@ public class StudentFormController {
                 e.printStackTrace();
                 new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
             }
-
         }
 
         try {
             loadAllStudents();
+            initialUI();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } catch (ClassNotFoundException e) {
