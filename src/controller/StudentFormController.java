@@ -164,7 +164,16 @@ public class StudentFormController {
 
         }else {
             //---------------------update--------------------------------------
-            
+            try {
+                if (CrudUtil.execute("UPDATE student SET student_name=? , email=? , contact=? , address=? , nic=? WHERE student_id=?",txtStudentName.getText(),txtEmail.getText(),txtContactNo.getText(),txtAddress.getText(),txtNIC.getText(),StudentID)){
+                    new Alert(Alert.AlertType.CONFIRMATION, "Saved Student Successfully!..").show();
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+            }
 
         }
 
