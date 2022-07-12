@@ -132,7 +132,23 @@ public class StudentFormController {
         return null;
     }
 
-    public void btnNewStudentOnAction(ActionEvent actionEvent) {
+    public void btnNewStudentOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
+        StudentID = generateNewStudentId();
+        lblStudentID.setText("Student ID :" + StudentID);
+        txtStudentName.setDisable(false);
+        txtNIC.setDisable(false);
+        txtAddress.setDisable(false);
+        txtContactNo.setDisable(false);
+        txtEmail.setDisable(false);
+        txtStudentName.clear();
+        txtNIC.clear();
+        txtAddress.clear();
+        txtContactNo.clear();
+        txtEmail.clear();
+        txtStudentName.requestFocus();
+        btnSave.setDisable(false);
+        btnSave.setText("Save Student");
+        tblStudent.getSelectionModel().clearSelection();
     }
 
     public void btnSaveStudentOnAction(ActionEvent actionEvent) {
